@@ -68,10 +68,40 @@ function draw() {
 
   //call the class to draw the circles
   for (let circle of circles) {
+    circle.update();
     circle.display();
   }
 
 }
+
+//转换鼠标点击位置
+function convertToScreenCoords(x, y, translateX, translateY, angle) {
+  // 旋转
+  let rotatedX = cos(angle) * x - sin(angle) * y;
+  let rotatedY = sin(angle) * x + cos(angle) * y;
+
+  // 平移
+  let screenX = rotatedX - translateX;
+  let screenY = rotatedY - translateY;
+
+  return {
+      x: screenX,
+      y: screenY
+  };
+}
+
+//检测鼠标点击事件
+function mousePressed() {
+  for (let i = 0; i < circles.length; i++) {
+      let screenCoords = convertToScreenCoords(circles[i].x, circles[i].y, 200, 100, 50);
+      if (dist(screenCoords.x, screenCoords.y, mouseX, mouseY) < circles[i].getBoundaryRadius()) {
+          circles[i].shrinking = true;
+          break;
+      }
+  }
+}
+
+
 
 class Circle {
   constructor(x, y, r, count, gap) {
@@ -80,6 +110,8 @@ class Circle {
     this.r = r;
     this.count = count; // 同心圆的数量
     this.gap = gap; // 同心圆之间的间距
+    this.shrinking = false; //缩小
+    this.growing = false; //放大
 
     // 在构造函数中生成随机颜色
     this.colorA = color(random(360), 100, 100);
@@ -94,6 +126,41 @@ class Circle {
     let smallCircleRadius = 1.5;
     return this.r + this.gap * 2 + 5 * this.gap * smallCircleRadius + smallCircleRadius;
   }
+
+  isInside(mx, my) {
+    let d = dist(mx, my, this.x, this.y);
+    return d < this.getBoundaryRadius();
+  }
+
+  reset() {
+    this.r = 0; // 重新开始增长的初始半径
+    this.colorA = color(random(255), random(255), random(255));
+    this.colorB = color(random(255), random(255), random(255));
+    this.colorC = color(random(255), random(255), random(255));
+    this.colorD = color(random(255), random(255), random(255));
+    this.colorF = color(random(255), random(255), random(255));
+    this.colorE = color(random(255), random(255), random(255));
+  }
+
+
+  update() {
+    if (this.shrinking) {
+        this.r -= 2;  // 缩小的速度
+        if (this.r <= 0) {
+            this.shrinking = false;
+            this.growing = true;
+            this.reset();  // 重置圆的属性
+        }
+    } else if (this.growing) {
+        this.r += 1;  // 增长的速度
+        if (this.r >= 50) {  // 原始半径大小
+            this.growing = false;
+            this.r = 50;
+        }
+    }
+  }
+
+
 
   display() {
     let smallCircleRadius = 1.5;
