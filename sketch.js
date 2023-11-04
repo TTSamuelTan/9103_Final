@@ -1,6 +1,6 @@
-let circles = [];  //储存Circle的数组 
+let circles = [];  //Circle Array
 let backgroundCircles = [];
-let rotateSpeed = 0.005; //圆形自旋速度
+let rotateSpeed = 0.005; //Circle Rotate Speed
 let startTime;
 
 function setup() {
@@ -42,13 +42,12 @@ function setup() {
     }
   }
 
-  let maxRadius = new Circle(0, 0, 50, 16, 3).getBoundaryRadius(); // 获取图形的最大半径
+  let maxRadius = new Circle(0, 0, 50, 16, 3).getBoundaryRadius(); // Get the radius of MaxCircle
   let rows = 10;
   let cols = 10;
 
-  // 使用rows和cols作为循环的结束条件
+  // Use rows and cols as End conditions
   for (let rowIndex = 0, y = maxRadius; rowIndex < rows; y += maxRadius * 1.9, rowIndex++) {
-    // 确定奇数行和偶数行的起始x坐标
     let startX = rowIndex % 2 == 0 ? maxRadius : maxRadius + maxRadius;
     for (let colIndex = 0, x = startX; colIndex < cols; x += maxRadius * 2.1, colIndex++) {
       circles.push(new Circle(x, y, 50, 16, 3));
@@ -77,13 +76,13 @@ function draw() {
 
 }
 
-//转换鼠标点击位置
+//Convert mouse click position
 function convertToScreenCoords(x, y, translateX, translateY, angle) {
-  // 旋转
+  // rtotate
   let rotatedX = cos(angle) * x - sin(angle) * y;
   let rotatedY = sin(angle) * x + cos(angle) * y;
 
-  // 平移
+  // move
   let screenX = rotatedX - translateX;
   let screenY = rotatedY - translateY;
 
@@ -93,7 +92,7 @@ function convertToScreenCoords(x, y, translateX, translateY, angle) {
   };
 }
 
-//检测鼠标点击事件
+//Convert mouse click event
 function mousePressed() {
   for (let i = 0; i < circles.length; i++) {
       let screenCoords = convertToScreenCoords(circles[i].x, circles[i].y, 200, 100, 50);
@@ -111,13 +110,13 @@ class Circle {
     this.x = x;
     this.y = y;
     this.r = r;
-    this.count = count; // 同心圆的数量
-    this.gap = gap; // 同心圆之间的间距
-    this.shrinking = false; //缩小
-    this.growing = false; //放大
-    this.rotateDirection = random() > 0.5 ? 1 : -1; //随机旋转方向
+    this.count = count; // Number of concentric circles
+    this.gap = gap; // Spacing between concentric circles
+    this.shrinking = false; //DownSize
+    this.growing = false; //UpSize
+    this.rotateDirection = random() > 0.5 ? 1 : -1; //Random rotate direction
 
-    // 在构造函数中生成随机颜色
+    // Generating random colours
     this.colorA = color(random(360), 100, 100);
     this.colorB = color(random(360), 150, 100);
     this.colorC = color(random(360), 150, 100);
@@ -137,7 +136,7 @@ class Circle {
   }
 
   reset() {
-    this.r = 0; // 重新开始增长的初始半径
+    this.r = 0;
     this.colorA = color(random(255), random(255), random(255));
     this.colorB = color(random(255), random(255), random(255));
     this.colorC = color(random(255), random(255), random(255));
@@ -149,15 +148,15 @@ class Circle {
 
   update() {
     if (this.shrinking) {
-        this.r -= 2;  // 缩小的速度
+        this.r -= 2;  // DownSize Speed
         if (this.r <= 0) {
             this.shrinking = false;
             this.growing = true;
-            this.reset();  // 重置圆的属性
+            this.reset();  // Reset Circle Properties
         }
     } else if (this.growing) {
-        this.r += 1;  // 增长的速度
-        if (this.r >= 50) {  // 原始半径大小
+        this.r += 1;  // UpSize Speed
+        if (this.r >= 50) {  // Target radius size
             this.growing = false;
             this.r = 50;
         }
@@ -177,41 +176,41 @@ class Circle {
     let speedFactor = sin(TWO_PI * elapsed / 120); //Change period is 120s
     let dynamicRotateSpeed = map(speedFactor, -1, 1, 0.002, 0.01); //Speed change from 0.002 to 0.01
 
-    // 绘制边界圆，最大的圆
-    fill(this.colorE); // 设置填充颜色为白色
+    // Drawing boundary circles, largest circle
+    fill(this.colorE);
     ellipse(this.x, this.y, boundaryRadius * 2);
-    //同心圆
+    //concentric circles
     for (let i = 0; i < this.count; i++) {
       let radius = this.r - i * this.gap;
-      if (i === this.count - 1) {  // 最小半径的圆
-        fill(255);  // 白色
-      } else if (i <= this.count / 2) {  // i在0-9之间
-        if (i % 2 === 1) {  // 奇数
-          fill(this.colorA);  // 随机颜色A
-        } else {  // 偶数
-          fill(this.colorB);  // 随机颜色B
+      if (i === this.count - 1) {  // The min radius circle
+        fill(255);
+      } else if (i <= this.count / 2) {  // i between 0~9
+        if (i % 2 === 1) {  // Odd
+          fill(this.colorA);  // Random color A
+        } else {  // Even
+          fill(this.colorB);  // Random color B
         }
-      } else if (i >= this.count / 2 + 1 && i < this.count - 1) {  // i在11-this.count-2之间
-        if (i % 2 === 1) {  // 奇数
-          fill(this.colorC);  // 随机颜色C
-        } else {  // 偶数
-          fill(this.colorD);  // 随机颜色D
+      } else if (i >= this.count / 2 + 1 && i < this.count - 1) {  // i between 9 and this.count-2
+        if (i % 2 === 1) {  // Odd
+          fill(this.colorC);  // Random color C
+        } else {  // Even
+          fill(this.colorD);  // Random color D
         }
       }
       noStroke();
       ellipse(this.x, this.y, radius * 2);
     }
-    //小圆
+
+    
+    //Small Circle
     for (let j = 0; j < 5; j++) {
-      // this.gap * 2: 这是为了从最外层的同心圆到第一组小圆圈的距离。这里乘以2是因为你从同心圆的最外边到第一组小圆圈的边缘需要两个这样的间隙。
-      // j * this.gap * smallCircleRadius:这部分代表了从第一组小圆圈到当前小圆圈组的距离。每一组小圆圈之间的距离是 3 * this.gap。j 是一个循环变量，表示当前是第几组小圆圈（从0开始）。所以 j * this.gap * 3 就是从第一组小圆圈到当前小圆圈组的总距离。
+      // this.gap * 2: This is for the distance from the outermost concentric circle to the first set of smaller circles. This is multiplied by 2 because you need two such gaps from the outermost edge of the concentric circles to the edge of the first set of small circles.
       let outerRadius = this.r + this.gap * 2 + j * this.gap * smallCircleRadius;
-      fill(this.colorF); // 为小圆设置填充颜色
-      for (let i = 0; i < (smallcircleNumber + j * 3); i++) {//j*3是为了增加小圆数量
-        let angle = TWO_PI / (smallcircleNumber + j * 3) * i + frameCount * dynamicRotateSpeed * this.rotateDirection; //使得角度与frame挂钩，则不停旋转
+      fill(this.colorF); // Setting the fill colour for a small circle
+      for (let i = 0; i < (smallcircleNumber + j * 3); i++) {
+        let angle = TWO_PI / (smallcircleNumber + j * 3) * i + frameCount * dynamicRotateSpeed * this.rotateDirection; //Make the angle tied to the frame and keep rotating
         let smallCircleX = this.x + outerRadius * cos(angle);
         let smallCircleY = this.y + outerRadius * sin(angle);
-
         ellipse(smallCircleX, smallCircleY, smallCircleRadius * 2);
       }
     }
