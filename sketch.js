@@ -113,6 +113,7 @@ class Circle {
     this.gap = gap; // 同心圆之间的间距
     this.shrinking = false; //缩小
     this.growing = false; //放大
+    this.rotateDirection = random() > 0.5 ? 1 : -1; //随机旋转方向
 
     // 在构造函数中生成随机颜色
     this.colorA = color(random(360), 100, 100);
@@ -199,7 +200,7 @@ class Circle {
       let outerRadius = this.r + this.gap * 2 + j * this.gap * smallCircleRadius;
       fill(this.colorF); // 为小圆设置填充颜色
       for (let i = 0; i < (smallcircleNumber + j * 3); i++) {//j*3是为了增加小圆数量
-        let angle = TWO_PI / (smallcircleNumber + j * 3) * i + frameCount * rotateSpeed; //使得角度与frame挂钩，则不停旋转
+        let angle = TWO_PI / (smallcircleNumber + j * 3) * i + frameCount * rotateSpeed * this.rotateDirection; //使得角度与frame挂钩，则不停旋转
         let smallCircleX = this.x + outerRadius * cos(angle);
         let smallCircleY = this.y + outerRadius * sin(angle);
 
