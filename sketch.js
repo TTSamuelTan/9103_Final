@@ -1,11 +1,13 @@
 let circles = [];  //储存Circle的数组 
 let backgroundCircles = [];
 let rotateSpeed = 0.005; //圆形自旋速度
+let startTime;
 
 function setup() {
   createCanvas(500, 500);
   colorMode(HSB);
   background(200, 150, 60);
+  startTime = millis();
 
   var protection = 0;
 
@@ -168,6 +170,12 @@ class Circle {
     let smallCircleRadius = 1.5;
     let smallcircleNumber = 36;
     let boundaryRadius = this.r + this.gap * 2 + 5 * this.gap * smallCircleRadius + smallCircleRadius;
+    
+
+    // calculate dynamicrotateSpeed
+    let elapsed = (millis() - startTime) / 1000; //Get the seconds that passed
+    let speedFactor = sin(TWO_PI * elapsed / 120); //Change period is 120s
+    let dynamicRotateSpeed = map(speedFactor, -1, 1, 0.002, 0.01); //Speed change from 0.002 to 0.01
 
     // 绘制边界圆，最大的圆
     fill(this.colorE); // 设置填充颜色为白色
@@ -200,7 +208,7 @@ class Circle {
       let outerRadius = this.r + this.gap * 2 + j * this.gap * smallCircleRadius;
       fill(this.colorF); // 为小圆设置填充颜色
       for (let i = 0; i < (smallcircleNumber + j * 3); i++) {//j*3是为了增加小圆数量
-        let angle = TWO_PI / (smallcircleNumber + j * 3) * i + frameCount * rotateSpeed * this.rotateDirection; //使得角度与frame挂钩，则不停旋转
+        let angle = TWO_PI / (smallcircleNumber + j * 3) * i + frameCount * dynamicRotateSpeed * this.rotateDirection; //使得角度与frame挂钩，则不停旋转
         let smallCircleX = this.x + outerRadius * cos(angle);
         let smallCircleY = this.y + outerRadius * sin(angle);
 
