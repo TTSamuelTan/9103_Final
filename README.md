@@ -1,4 +1,4 @@
-# **TimeWeel HandBook**
+# **TimeWheel HandBook**
 
 ## Automatic animation(Timers)
 When the webpage is opened, the circles in the image will automatically begin to rotate. This rotation undergoes a cyclical speed change: ***first accelerating for 60 seconds, then decelerating for another 60 seconds***, repeating this cycle continuously. 
